@@ -31,19 +31,22 @@ var monthRevMap = {
 }
 app.get("/:inpTs",function(req,resp){
   var inpStr = req.params.inpTs.toString();
-  var tsObj = {"unix": null,
-              "natural": null
-  }
+  var tsObj = {
+    "unix": null,
+    "natural": null
+    }
     //see if its a TS
     var tsNum = Number(inpStr);
       if (isNaN(tsNum)){
       // if its NaN could be natural lang
       try{
-      var natArr = inpStr.split(",")
+      var natArr = inpStr.split(",");
       var yrNo = Number(natArr[1].trim());
-      var monNo = Number(monthRevMap[natArr[0].split(" ")[0].trim()]);
-      var dateNo = Number(natArr[0].split(" ")[1]);
-      var date = new Date(yrNo,monNo,dateNo)
+      var monNo = Number(monthRevMap[natArr[0].split(" ")[0].trim()]) || null ;
+      var dateNo = Number(natArr[0].split(" ")[1])|| null;
+      if(!yrNo ||!monNo || !dateNo ){resp.send(tsObj); return;}
+      
+      var date = new Date(yrNo,monNo,dateNo);
       tsObj.unix = date.getTime()/1000;
       tsObj.natural = inpStr;
       resp.send(tsObj);
